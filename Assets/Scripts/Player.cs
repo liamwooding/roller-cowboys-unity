@@ -12,15 +12,17 @@ public class Player : MonoBehaviour {
   private Vector3 shot1;
   private Vector3 shot2;
   private int shotsDeclared = 0;
+  public enum State {Ready, Waiting}
+  public State state;
 
   // Use this for initialization
   void Start () {}
 
   // Update is called once per frame
   void Update () {
-    if (Input.GetMouseButtonDown(0)) {
+    if (Input.GetMouseButtonDown(0) && state == State.Ready) {
       OnMouseDown();
-    } else if (Input.GetMouseButtonUp(0)) {
+    } else if (Input.GetMouseButtonUp(0) && state == State.Ready) {
       OnMouseUp();
     }
   }
@@ -42,11 +44,17 @@ public class Player : MonoBehaviour {
     DeclareShot(dragVector);
   }
 
+  public void Ready () {
+    state = State.Ready;
+  }
+
   void DeclareShot (Vector3 shotVector) {
     if (shotsDeclared == 0) {
+      Debug.Log("Declaring shot 1");
       shot1 = shotVector;
       shotsDeclared++;
     } else {
+      Debug.Log("Declaring shot 2");
       shot2 = shotVector;
       shotsDeclared = 0;
       FireShots();
@@ -54,9 +62,11 @@ public class Player : MonoBehaviour {
   }
 
   void FireShots () {
+    state = State.Waiting;
     FireBullet(shot1);
     FireBullet(shot2);
     ApplyKickback();
+    GameManager.instance.EndTurn();
   }
 
   void FireBullet (Vector3 velocity) {

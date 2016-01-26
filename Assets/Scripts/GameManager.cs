@@ -5,6 +5,12 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour {
 
   public static GameManager instance = null;
+  public GameObject playerGO;
+
+  private GameObject player;
+  private Player playerScript;
+  private static float playTime = 3;
+  private float remainingPlayTime = playTime;
 
   void Awake () {
     if (instance == null) {
@@ -21,9 +27,28 @@ public class GameManager : MonoBehaviour {
   }
 
   void InitGame () {
-    
+    player = (GameObject) Instantiate(playerGO, new Vector3(0, 1, 0), Quaternion.identity);
+    playerScript = (Player) player.GetComponent(typeof(Player));
+    playerScript.Ready();
   }
 
   //Update is called every frame.
-  void Update () {}
+  void Update () {
+    if (remainingPlayTime > 0) {
+      remainingPlayTime -= Time.deltaTime;
+    } else if (remainingPlayTime <= 0 && playerScript.state != Player.State.Ready) {
+      StartTurn();
+    }
+  }
+
+  void StartTurn() {
+    Debug.Log("New turn starts");
+    remainingPlayTime = playTime;
+    playerScript.Ready();
+  }
+
+  public void EndTurn () {
+    Debug.Log("Turn ended");
+
+  }
 }
