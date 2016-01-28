@@ -11,7 +11,7 @@ public class Player : MonoBehaviour, IShootable {
   public float drag = 3f;
   public Vector3 startPosition = new Vector3(0, 1, 0);
 
-  private Rigidbody rigidBody;
+  private Rigidbody rb;
   private Vector3 dragStart;
   private int dragThreshold = 9;
   private Vector3 shot1;
@@ -23,7 +23,7 @@ public class Player : MonoBehaviour, IShootable {
 
   // Use this for initialization
   void Start () {
-    rigidBody = gameObject.GetComponent<Rigidbody>();
+    rb = gameObject.GetComponent<Rigidbody>();
   }
 
   // Update is called once per frame
@@ -40,12 +40,10 @@ public class Player : MonoBehaviour, IShootable {
   }
 
   void HandleMouseDown () {
-    Debug.Log("Mouse down");
     dragStart = Input.mousePosition;
   }
 
   void HandleMouseUp () {
-    Debug.Log("Mouse up");
     var dragVector = Input.mousePosition - dragStart;
     dragVector.Normalize();
     if (Vector3.Distance(dragStart, Input.mousePosition) < dragThreshold) {
@@ -70,16 +68,14 @@ public class Player : MonoBehaviour, IShootable {
 
   public void GetShot (GameObject bullet) {
     transform.position = startPosition;
-    rigidBody.velocity = new Vector3(0, 0, 0);
+    rb.velocity = new Vector3(0, 0, 0);
   }
 
   void DeclareShot (Vector3 shotVector) {
     if (shotsDeclared == 0) {
-      Debug.Log("Declaring shot 1");
       shot1 = shotVector;
       shotsDeclared++;
     } else {
-      Debug.Log("Declaring shot 2");
       shot2 = shotVector;
       TakeAction();
     }
@@ -113,19 +109,19 @@ public class Player : MonoBehaviour, IShootable {
 
   void ApplyKickback () {
     Vector3 kickVector = -(shot1 + shot2);
-    rigidBody.velocity = kickVector * kickSpeed;
+    rb.velocity = kickVector * kickSpeed;
   }
 
   void AdjustCoast () {
-    if (state == State.Moving && rigidBody.IsSleeping()) {
-      rigidBody.drag = drag;
+    if (state == State.Moving && rb.IsSleeping()) {
+      rb.drag = drag;
       WaitForNewTurn();
       return;
     } 
 
     coastingTime += Time.deltaTime;
     if (coastingTime >= (turnTime - brakingTime)) {
-      rigidBody.drag += (Time.deltaTime * 50);
+      rb.drag += (Time.deltaTime * 50);
     }
   }
 }
