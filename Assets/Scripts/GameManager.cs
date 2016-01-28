@@ -6,8 +6,9 @@ public class GameManager : MonoBehaviour {
 
   public static GameManager instance = null;
   public GameObject playerGO;
+  public GameObject enemyGO;
 
-  private GameObject player;
+  public GameObject player;
   private Player playerScript;
   private static float playTime = 3;
   private float remainingPlayTime = playTime;
@@ -49,6 +50,14 @@ public class GameManager : MonoBehaviour {
 
   public void EndTurn () {
     Debug.Log("Turn ended");
+    GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
 
+    foreach (GameObject enemy in enemies) {
+      Enemy enemyScript = (Enemy) enemy.GetComponent("Enemy");
+      enemyScript.DecideAction();
+    }
+    if (enemies.Length < 1) {
+      Instantiate(enemyGO, new Vector3(2, 1, 2), Quaternion.identity);
+    }
   }
 }
