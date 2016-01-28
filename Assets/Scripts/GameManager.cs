@@ -41,13 +41,13 @@ public class GameManager : MonoBehaviour {
   }
 
   public void StartTurn() {
-    Debug.Log("New turn starts");
+    Debug.Log("New turn starts ===============");
     remainingPlayTime = playTime;
     playerScript.Ready();
   }
 
   public void EndTurn () {
-    Debug.Log("Turn ended");
+    Debug.Log("Turn ended ====================");
     GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
 
     foreach (GameObject enemy in enemies) {

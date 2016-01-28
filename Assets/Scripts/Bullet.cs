@@ -12,10 +12,10 @@ public class Bullet : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-    secondsToLive -= Time.deltaTime;
-    if (secondsToLive <= 0) {
-      Debug.Log("Bullet self-destructs");
-      Destroy(gameObject);
-    }
+	    secondsToLive -= Time.deltaTime;
+	    if (secondsToLive <= 0) {
+	      Debug.Log("Bullet self-destructs");
+	      Destroy(gameObject);
+	    }
 	}
 }

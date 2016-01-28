@@ -27,22 +27,24 @@ public class Player : MonoBehaviour {
 
   // Update is called once per frame
   void Update () {
-    if (Input.GetMouseButtonDown(0) && state == State.Ready) {
-      OnMouseDown();
-    } else if (Input.GetMouseButtonUp(0) && state == State.Ready) {
-      OnMouseUp();
-    }
-
-    if (state == State.Moving) {
+    if (state == State.Ready) {
+      if (Input.GetMouseButtonDown(0)) {
+        HandleMouseDown();
+      } else if (Input.GetMouseButtonUp(0)) {
+        HandleMouseUp();
+      }
+    } else if (state == State.Moving) {
       AdjustCoast();
     }
   }
 
-  void OnMouseDown () {
+  void HandleMouseDown () {
+    Debug.Log("Mouse down");
     dragStart = Input.mousePosition;
   }
 
-  void OnMouseUp () {
+  void HandleMouseUp () {
+    Debug.Log("Mouse up");
     var dragVector = Input.mousePosition - dragStart;
     dragVector.Normalize();
     if (Vector3.Distance(dragStart, Input.mousePosition) < dragThreshold) {
@@ -79,6 +81,7 @@ public class Player : MonoBehaviour {
   }
 
   void WaitForNewTurn () {
+    Debug.Log("Player waiting for new turn");
     state = State.Waiting;
     GameManager.instance.StartTurn();
   }
@@ -111,7 +114,6 @@ public class Player : MonoBehaviour {
     coastingTime += Time.deltaTime;
     if (coastingTime >= (turnTime - brakingTime)) {
       rigidBody.drag += (Time.deltaTime * 25);
-      Debug.Log(rigidBody.drag);
     }
   }
 }
