@@ -6,17 +6,24 @@ public class Player : MonoBehaviour {
   public Rigidbody bullet;
   public float bulletSpeed = 1f;
   public float kickSpeed = 1f;
+  public float turnTime = 0.75f;
+  public float brakingTime = 0.2f;
+  public float drag = 3f;
 
+  private Rigidbody rigidBody;
   private Vector3 dragStart;
   private int dragThreshold = 9;
   private Vector3 shot1;
   private Vector3 shot2;
+  private float coastingTime;
   private int shotsDeclared = 0;
-  public enum State {Ready, Waiting}
+  public enum State {Ready, Waiting, Moving}
   public State state;
 
   // Use this for initialization
-  void Start () {}
+  void Start () {
+    rigidBody = gameObject.GetComponent<Rigidbody>();
+  }
 
   // Update is called once per frame
   void Update () {
@@ -24,6 +31,10 @@ public class Player : MonoBehaviour {
       OnMouseDown();
     } else if (Input.GetMouseButtonUp(0) && state == State.Ready) {
       OnMouseUp();
+    }
+
+    if (state == State.Moving) {
+      AdjustCoast();
     }
   }
 
@@ -56,17 +67,27 @@ public class Player : MonoBehaviour {
     } else {
       Debug.Log("Declaring shot 2");
       shot2 = shotVector;
-      shotsDeclared = 0;
-      FireShots();
+      TakeAction();
     }
   }
 
-  void FireShots () {
+  void TakeAction () {
+    state = State.Moving;
+    FireShots();
+    coastingTime = 0f;
+    GameManager.instance.EndTurn();
+  }
+
+  void WaitForNewTurn () {
     state = State.Waiting;
+    GameManager.instance.StartTurn();
+  }
+
+  void FireShots () {
     FireBullet(shot1);
     FireBullet(shot2);
     ApplyKickback();
-    GameManager.instance.EndTurn();
+    shotsDeclared = 0;
   }
 
   void FireBullet (Vector3 velocity) {
@@ -77,7 +98,20 @@ public class Player : MonoBehaviour {
 
   void ApplyKickback () {
     Vector3 kickVector = -(shot1 + shot2);
-    Rigidbody rigidBody = gameObject.GetComponent<Rigidbody>();
     rigidBody.velocity = kickVector * kickSpeed;
+  }
+
+  void AdjustCoast () {
+    if (state == State.Moving && rigidBody.IsSleeping()) {
+      rigidBody.drag = drag;
+      WaitForNewTurn();
+      return;
+    } 
+
+    coastingTime += Time.deltaTime;
+    if (coastingTime >= (turnTime - brakingTime)) {
+      rigidBody.drag += (Time.deltaTime * 25);
+      Debug.Log(rigidBody.drag);
+    }
   }
 }

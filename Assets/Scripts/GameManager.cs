@@ -37,12 +37,10 @@ public class GameManager : MonoBehaviour {
   void Update () {
     if (remainingPlayTime > 0) {
       remainingPlayTime -= Time.deltaTime;
-    } else if (remainingPlayTime <= 0 && playerScript.state != Player.State.Ready) {
-      StartTurn();
     }
   }
 
-  void StartTurn() {
+  public void StartTurn() {
     Debug.Log("New turn starts");
     remainingPlayTime = playTime;
     playerScript.Ready();
