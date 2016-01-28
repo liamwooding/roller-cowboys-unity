@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : MonoBehaviour, IShootable {
 
   public Rigidbody bullet;
   public float bulletSpeed = 1f;
@@ -15,6 +15,10 @@ public class Enemy : MonoBehaviour {
 
   public void DecideAction () {
     FireBullet(GetShotDirection());
+  }
+
+  public void GetShot (GameObject bullet) {
+    Debug.Log("I've been shot!");
   }
 
   Vector3 GetShotDirection () {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour, IShootable {
 
   public Rigidbody bullet;
   public float bulletSpeed = 1f;
@@ -9,6 +9,7 @@ public class Player : MonoBehaviour {
   public float turnTime = 0.75f;
   public float brakingTime = 0.2f;
   public float drag = 3f;
+  public Vector3 startPosition = new Vector3(0, 1, 0);
 
   private Rigidbody rigidBody;
   private Vector3 dragStart;
@@ -57,8 +58,19 @@ public class Player : MonoBehaviour {
     DeclareShot(dragVector);
   }
 
+  void OnCollisionEnter (Collision col) {
+    if (col.gameObject.tag == "Bullet") {
+      GetShot(col.gameObject);
+    }
+  }
+
   public void Ready () {
     state = State.Ready;
+  }
+
+  public void GetShot (GameObject bullet) {
+    transform.position = startPosition;
+    rigidBody.velocity = new Vector3(0, 0, 0);
   }
 
   void DeclareShot (Vector3 shotVector) {
@@ -113,7 +125,7 @@ public class Player : MonoBehaviour {
 
     coastingTime += Time.deltaTime;
     if (coastingTime >= (turnTime - brakingTime)) {
-      rigidBody.drag += (Time.deltaTime * 25);
+      rigidBody.drag += (Time.deltaTime * 50);
     }
   }
 }

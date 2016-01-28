@@ -28,8 +28,9 @@ public class GameManager : MonoBehaviour {
   }
 
   void InitGame () {
-    player = (GameObject) Instantiate(playerGO, new Vector3(0, 1, 0), Quaternion.identity);
+    player = (GameObject) Instantiate(playerGO, new Vector3(0, 0, 0), Quaternion.identity);
     playerScript = (Player) player.GetComponent(typeof(Player));
+    player.transform.position = playerScript.startPosition;
     playerScript.Ready();
   }
 
@@ -47,8 +48,8 @@ public class GameManager : MonoBehaviour {
   }
 
   public void EndTurn () {
-    Debug.Log("Turn ended ====================");
-    GameObject[] enemies = GameObject.FindGameObjectsWithTag("enemy");
+    Debug.Log("Turn ended ++++++++++++++++++++");
+    GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
     foreach (GameObject enemy in enemies) {
       Enemy enemyScript = (Enemy) enemy.GetComponent("Enemy");
