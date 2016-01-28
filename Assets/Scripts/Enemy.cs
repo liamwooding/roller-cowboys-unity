@@ -18,7 +18,13 @@ public class Enemy : MonoBehaviour, IShootable {
   }
 
   public void GetShot (GameObject bullet) {
-    Debug.Log("I've been shot!");
+    Destroy(gameObject);
+  }
+
+  void OnCollisionEnter (Collision col) {
+    if (col.gameObject.tag == "Bullet") {
+      GetShot(col.gameObject);
+    }
   }
 
   Vector3 GetShotDirection () {

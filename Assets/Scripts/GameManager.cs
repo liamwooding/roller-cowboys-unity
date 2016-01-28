@@ -55,8 +55,14 @@ public class GameManager : MonoBehaviour {
       Enemy enemyScript = (Enemy) enemy.GetComponent("Enemy");
       enemyScript.DecideAction();
     }
-    if (enemies.Length < 1) {
-      Instantiate(enemyGO, new Vector3(2, 1, 2), Quaternion.identity);
+    if (enemies.Length < 2) {
+      Instantiate(enemyGO, GetRandomSpawnPosition(), Quaternion.identity);
     }
+  }
+
+  Vector3 GetRandomSpawnPosition () {
+    float x = Random.Range(-16, 16);
+    float z = Random.Range(-11, 11);
+    return new Vector3(x, 1, z);
   }
 }
